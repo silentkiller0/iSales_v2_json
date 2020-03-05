@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".pages.ticketing.TicketingActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_margin="20dp">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Service Ticketing"
+            android:textColor="@android:color/black"
+            android:textSize="25dp"
+            android:textStyle="bold"
+            android:layout_marginBottom="20dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Veuillez remplir tous les champs contenant un * pour envoyer un ticket avec succès."
+            android:textColor="@android:color/black"
+            android:textSize="16dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="10dp"
+            android:background="@drawable/bg_outline_black"
+            android:layout_marginBottom="20dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nom du Ticket *"
+                android:textColor="@android:color/black"
+                android:textStyle="bold"/>
+
+            <EditText
+                android:id="@+id/ticketingActivity_ticket_name_et"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Nom du ticket..."
+                android:singleLine="true" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="10dp"
+            android:background="@drawable/bg_outline_black"
+            android:layout_marginBottom="20dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sujet du Ticket *"
+                android:textColor="@android:color/black"
+                android:textStyle="bold"/>
+            <Spinner
+                android:id="@+id/ticketingActivity_ticket_subjet_sp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="10dp"
+            android:background="@drawable/bg_outline_black"
+            android:layout_marginBottom="20dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Adresse Courriel *"
+                android:textColor="@android:color/black"
+                android:textStyle="bold"/>
+
+            <EditText
+                android:id="@+id/ticketingActivity_ticket_email_et"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Votre adresse courriel..."
+                android:singleLine="true" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="10dp"
+            android:background="@drawable/bg_outline_black"
+            android:layout_marginBottom="20dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Texte du Ticket *"
+                android:textColor="@android:color/black"
+                android:textStyle="bold"/>
+
+            <EditText
+                android:id="@+id/ticketingActivity_ticket_body_et"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_marginBottom="20dp"
+                android:hint="Expliquer en détail, ce que vous faisait avant et quand le bug est survenu..."
+                android:inputType="textMultiLine" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="20dp"
+            android:gravity="center">
+            <Button
+                android:id="@+id/ticketingActivity_ticket_cancel_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Annuler"
+                android:layout_margin="10dp"/>
+            <Button
+                android:id="@+id/ticketingActivity_ticket_preview_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Aperçu"
+                android:layout_margin="10dp"/>
+            <Button
+                android:id="@+id/ticketingActivity_ticket_send_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Envoyer"
+                android:layout_margin="10dp"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</ScrollView>

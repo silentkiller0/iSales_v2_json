@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".pages.calendar.CalendarActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:background="@color/colorPrimary">
+
+        <ImageButton
+            android:id="@+id/calendar_previousMontBtn"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/ic_chevron_left_xml"
+            android:layout_margin="5dp"/>
+
+        <TextView
+            android:id="@+id/calendar_activity_currentDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginTop="4dp"
+            android:text="CurrentDate"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:layout_weight="3"/>
+
+        <ImageButton
+            android:id="@+id/calendar_activity_nextMontBtn"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/ic_chevron_right_xml"
+            android:layout_margin="5dp"/>
+
+        <ImageButton
+            android:id="@+id/calendar_activity_synchro"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/ic_sync_white_24dp"
+            android:layout_margin="5dp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:background="@color/colorPrimary">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Dim"
+            android:background="@color/android_default"
+            android:layout_marginTop="4dp"
+            android:layout_weight="1"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Lun"
+            android:background="@color/android_default"
+            android:layout_marginTop="4dp"
+            android:layout_weight="1"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Mar"
+            android:background="@color/android_default"
+            android:layout_marginTop="4dp"
+            android:layout_weight="1"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Mer"
+            android:background="@color/android_default"
+            android:layout_marginTop="4dp"
+            android:layout_weight="1"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Jeu"
+            android:background="@color/android_default"
+            android:layout_marginTop="4dp"
+            android:layout_weight="1"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Ven"
+            android:background="@color/android_default"
+            android:layout_marginTop="4dp"
+            android:layout_weight="1"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Sam"
+            android:background="@color/android_default"
+            android:layout_marginTop="4dp"
+            android:layout_weight="1"
+            android:textStyle="bold"/>
+
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/calendar_activity_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:numColumns="7"/>
+
+</LinearLayout>

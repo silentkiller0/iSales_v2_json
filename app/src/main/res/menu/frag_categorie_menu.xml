@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_fragcategorie_sync"
+        android:layout_height="wrap_content"
+        android:icon="@drawable/ic_sync_white_24dp"
+        android:orderInCategory="100"
+        android:title="@string/synchro_produits"
+        app:itemIconTint="@color/white"
+        app:itemTextColor="@color/white"
+        app:showAsAction="ifRoom|withText" />
+
+    <item
+        android:id="@+id/action_fragcategorie_sync_image"
+        android:layout_height="wrap_content"
+        android:icon="@drawable/ic_image_white_24dp"
+        android:orderInCategory="100"
+        android:title="Synchro Images"
+        app:itemIconTint="@color/white"
+        app:itemTextColor="@color/white"
+        app:showAsAction="ifRoom|withText" />
+
+</menu>
