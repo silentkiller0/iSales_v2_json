@@ -27,7 +27,6 @@ public interface DebugMessageDao {
     void deleteAllDebugMessages();
 
     @Insert
-    @Transaction
     void insertDebugMessage(DebugItemEntry debugItemEntry);
 
     @Update(onConflict = OnConflictStrategy.REPLACE)

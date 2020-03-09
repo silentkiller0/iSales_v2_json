@@ -307,18 +307,6 @@ public class CategoriesFragment extends Fragment implements ProduitsAdapterListe
         loadProduits(0, null, 0);
         reloadCategorieFragment();
         showProgress(false);
-        //###########################################################"
-        /*
-        try {
-            getcategoriesproducts_offline();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-         */
-        //###########################################################"
 
     }
 
@@ -769,15 +757,10 @@ public class CategoriesFragment extends Fragment implements ProduitsAdapterListe
             Objects.requireNonNull(getActivity()).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
 
 
-            Log.e(TAG, "Hostname : "+getServeurHostname());
-            if (getServeurHostname().contains("food")) {
-                SettingsEntry config = mDb.settingsDao().getAllSettings().get(0);
-
-                //Log.e(TAG, " contains(\"food\")");
-                //Log.e(TAG, " config.isEnableVirtualProductSync() : " + config.isEnableVirtualProductSync());
-                if (config.isEnableVirtualProductSync()){
-                    if (totalProducts > mDb.produitDao().getAllProduits().size()) {
-                        Log.e(TAG, "Get All Virtual products");
+            SettingsEntry config = mDb.settingsDao().getAllSettings().get(0);
+            if (config.isEnableVirtualProductSync()){
+                if (totalProducts >= mDb.produitDao().getAllProduits().size()) {
+                    Log.e(TAG, "Get All Virtual products");
 
                         /*
                         virtuelProductList = new ArrayList<>();
@@ -793,22 +776,15 @@ public class CategoriesFragment extends Fragment implements ProduitsAdapterListe
                         mDb.virtualProductDao().deleteAllVirtualProduct();
                         virtuelProductTotalID = virtuelProductList.size();
                         */
-                        //findVirtualProducts(true,0,9);
-                        //executeFindVirtualProducts();
-                        showProgressDialog(false, null, null);
-                        FindAllVirtualProductsTask task = new FindAllVirtualProductsTask(getContext(), CategoriesFragment.this);
-                        task.execute();
-                    }
-                }else{
-                    Log.e(TAG, "Products : " + totalProducts + " | " + mDb.produitDao().getAllProduits().size());
-                    //Fermeture du loader
+                    //findVirtualProducts(true,0,9);
+                    //executeFindVirtualProducts();
                     showProgressDialog(false, null, null);
-                    Toast.makeText(getContext(), getString(R.string.liste_produits_synchronises), Toast.LENGTH_LONG).show();
-                    initContent();
+                    FindAllVirtualProductsTask task = new FindAllVirtualProductsTask(getContext(), CategoriesFragment.this);
+                    task.execute();
                 }
             }else{
+                Log.e(TAG, "Products : " + totalProducts + " | " + mDb.produitDao().getAllProduits().size());
                 //Fermeture du loader
-                Log.e(TAG, " Not France Food");
                 showProgressDialog(false, null, null);
                 Toast.makeText(getContext(), getString(R.string.liste_produits_synchronises), Toast.LENGTH_LONG).show();
                 initContent();
@@ -833,27 +809,6 @@ public class CategoriesFragment extends Fragment implements ProduitsAdapterListe
         }
     }
 
-    private void executeFindVirtualProducts(){
-        mDb.debugMessageDao().insertDebugMessage(
-                new DebugItemEntry(getContext(), (System.currentTimeMillis()/1000), "Ticket", CategoriesFragment.class.getSimpleName(), "executeFindVirtualProducts()", "Called.", ""));
-
-        //Si le téléphone n'est pas connecté
-        if (!ConnectionManager.isPhoneConnected(getContext())) {
-            Toast.makeText(getContext(), getString(R.string.erreur_connexion), Toast.LENGTH_LONG).show();
-            mDb.debugMessageDao().insertDebugMessage(
-                    new DebugItemEntry(getContext(), (System.currentTimeMillis()/1000), "Ticket", CategoriesFragment.class.getSimpleName(), "executeFindVirtualProducts()", getString(R.string.erreur_connexion), ""));
-
-            showProgressDialog(false, null, null);
-            return;
-        }
-
-        if (mFindVirtualProductTask == null) {
-
-            //Log.e(TAG, "executeFindVirtualProducts: page=" + mPageVirtualProduct);
-            mFindVirtualProductTask = new FindProductVirtualTask(getContext(), false, virtuelProductList.get(virtuelProductID), CategoriesFragment.this);
-            mFindVirtualProductTask.execute();
-        }
-    }
 
     private void findImage() {
         final List<ProduitEntry> produitEntries = mDb.produitDao().getAllProduits();
@@ -885,154 +840,26 @@ public class CategoriesFragment extends Fragment implements ProduitsAdapterListe
         }
     }
 
-    private void findVirtualProducts(boolean delete, int start, int limit){
-        Log.e(TAG, " findVirtualProducts( "+start+", "+limit+")");
-        List<ProduitEntry> produitEntries = mDb.produitDao().getAllProduits();
-
-        if (delete){
-            Log.e(TAG, "There are "+mDb.virtualProductDao().getAllVirtualProduct().size()+" to be deleted!");
-            mDb.virtualProductDao().deleteAllVirtualProduct();
-            mVirtualProductCurrent = start;
-        }
-
-        mVirtualProductLimit = limit;
-        mVirtualProductCount = produitEntries.size();
-        //get virtual products
-        if (produitEntries.size() > 0) {
-            for (int i = start; i < limit; i++) {
-
-                if(!produitEntries.get(i).getRef().contains("C") && !produitEntries.get(i).getRef().contains("P")) {
-                    //executeFindVirtualProducts(Long.valueOf(produitEntry.getId()));
-                    Log.e(TAG, "findVirtualProducts: Init: " + (i+1) + " / "+mVirtualProductCount);
-                    Log.e(TAG, "findVirtualProducts: FindProductVirtualTask ID = " + produitEntries.get(i).getId() + " | Ref: "+produitEntries.get(i).getRef());
-
-//                    if (mProgressDialog != null) {
-//                        mProgressDialog.setMessage(String.format("%s. %s / %s ", "Téléchargement des Produits Visuel en cours... ", (i+1), mVirtualProductCount));
-//                    }
-
-                    FindProductVirtualTask task = new FindProductVirtualTask(getContext(), false, produitEntries.get(i).getId(), CategoriesFragment.this);
-                    task.execute();
-                }else{
-                    Log.e(TAG, "Product contains 'C' or 'P' in the reference!");
-                    Log.e(TAG, "findVirtualProducts: FindProductVirtualTask ID = " + produitEntries.get(i).getId() + " | Ref: "+produitEntries.get(i).getRef());
-                }
-            }
-            showProgressDialog(false, null, null);
-            return;
-        } else {
-            showProgressDialog(false, null, null);
-            Toast.makeText(getContext(), "Aucun produit synchronisé! ", Toast.LENGTH_LONG).show();
-            return;
-        }
+    @Override
+    public void onFindProductVirtualCompleted(FindProductVirtualREST findProductVirtualREST) {
     }
 
     @Override
-    public void onFindProductVirtualCompleted(Boolean downloadAll, FindProductVirtualREST findProductVirtualREST) {
-
-        if (downloadAll){
-            Log.e(TAG, "onFindProductVirtualCompleted() downloadAll == false");
-
-            Log.e(TAG, " It have "+findProductVirtualREST.getProductVirtuals().size()+" virtual products saved in the database!");
-            Log.e(TAG, " Here are the errors in counted : "+findProductVirtualREST.getErrorBody());
-            showProgressDialog(false, null, null);
-
-        }else {
-            Log.e(TAG, "onFindProductVirtualCompleted()");
-
-            //Si la recupération echoue, on renvoi un message d'erreur
-            if (findProductVirtualREST == null) {
-                Log.e(TAG, "onFindProductVirtualCompleted() => findProductVirtualREST == null");
-                //Fermeture du loader
-                showProgressDialog(false, null, null);
-                Toast.makeText(getContext(), getString(R.string.service_indisponible), Toast.LENGTH_LONG).show();
-
-                mDb.debugMessageDao().insertDebugMessage(
-                        new DebugItemEntry(getContext(), (System.currentTimeMillis() / 1000), "Ticket", CategoriesFragment.class.getSimpleName(), "onFindProductVirtualCompleted()", getString(R.string.service_indisponible), ""));
-                return;
-            }
-
-            if (findProductVirtualREST.getProductVirtuals() == null) {
-                Log.e(TAG, "onFindProductVirtualCompleted() => findProductVirtualREST.getProductVirtuals() == null");
-
-                //reinitialisation du nombre de page
-                Toast.makeText(getContext(), "Liste des produits virtuel synchroniser avec succes", Toast.LENGTH_LONG).show();
-
-                mDb.debugMessageDao().insertDebugMessage(
-                        new DebugItemEntry(getContext(), (System.currentTimeMillis() / 1000), "Ticket", CategoriesFragment.class.getSimpleName(), "onFindProductVirtualCompleted()", "Liste des produits virtuel synchroniser avec succes", ""));
-
-                //Fermeture du loader
-                showProgressDialog(false, null, null);
-
-                initContent();
-                //Virtual Product sync with success
-                return;
-            }
-
-//            if (mProgressDialog != null) {
-//                mProgressDialog.setMessage(String.format("%s. %s / %s ", "Installation des produits virtuel... ", mVirtualProductCurrent, mVirtualProductCount));
-//            }
-            try{
-                //mVirtualProductCurrent++;
-                Log.e(TAG, String.format("%s. %s / %s ", " Récupération des produits virtuel... ", virtuelProductID, virtuelProductTotalID));
-
-                double price0 = Double.parseDouble(findProductVirtualREST.getProductVirtuals().get(0).getPrice()) * Math.round(Double.parseDouble(findProductVirtualREST.getProductVirtuals().get(0).getQty()));
-                double priceTTC0 = Double.parseDouble(findProductVirtualREST.getProductVirtuals().get(0).getPrice_ttc()) * Math.round(Double.parseDouble(findProductVirtualREST.getProductVirtuals().get(0).getQty()));
-                findProductVirtualREST.getProductVirtuals().get(0).setPrice("" + price0);
-                findProductVirtualREST.getProductVirtuals().get(0).setPrice_ttc("" + priceTTC0);
-
-                Log.e(TAG, "onFindThirdpartieCompleted: insert virtualProductEntry int: 0");
-                mDb.virtualProductDao().insertVirtualProduct(findProductVirtualREST.getProductVirtuals().get(0));
-
-                for (int i = 1; i < findProductVirtualREST.getProductVirtuals().size(); i++) {
-                    Log.e(TAG, "ID : " + findProductVirtualREST.getProductVirtuals().get(i - 1).get_0() + " | RowId : " + findProductVirtualREST.getProductVirtuals().get(i - 1).getRowid() + " | Ref : " + findProductVirtualREST.getProductVirtuals().get(i - 1).getRef() + " | Price : " + findProductVirtualREST.getProductVirtuals().get(i - 1).getPrice() + " | Qte : " + Math.round(Double.parseDouble(findProductVirtualREST.getProductVirtuals().get(i).getQty())));
-                    double price = Double.parseDouble(findProductVirtualREST.getProductVirtuals().get(i - 1).getPrice()) * Math.round(Double.parseDouble(findProductVirtualREST.getProductVirtuals().get(i).getQty()));
-                    double priceTTC = Double.parseDouble(findProductVirtualREST.getProductVirtuals().get(i - 1).getPrice_ttc()) * Math.round(Double.parseDouble(findProductVirtualREST.getProductVirtuals().get(i).getQty()));
-                    findProductVirtualREST.getProductVirtuals().get(i).setPrice("" + price);
-                    findProductVirtualREST.getProductVirtuals().get(i).setPrice_ttc("" + priceTTC);
-
-                    Log.e(TAG, "onFindThirdpartieCompleted: insert virtualProductEntry int: " + i);
-                    mDb.virtualProductDao().insertVirtualProduct(findProductVirtualREST.getProductVirtuals().get(i));
-                }
-            }catch (Exception e){
-                Log.e(TAG, "onFindThirdpartieCompleted: *************** Exception ***************");
-                Log.e(TAG, "onFindThirdpartieCompleted: Error Message: " + e.getMessage());
-            }
-
-            if ((virtuelProductID+1) < virtuelProductTotalID){
-                virtuelProductID++;
-                Log.e(TAG, "Find virtuel products for id : "+virtuelProductID);
-                executeFindVirtualProducts();
-            }else{
-                Toast.makeText(getContext(), "Liste des produits virtuel synchroniser avec succes", Toast.LENGTH_LONG).show();
-            }
-
-            /*
-            Log.e(TAG, "onFindThirdpartieCompleted: mVirtualProductCurrent : " + mVirtualProductCurrent + " == mVirtualProductLimit : " + mVirtualProductLimit);
-            if (mVirtualProductCurrent == mVirtualProductLimit) {
-                int oldLimit = mVirtualProductLimit;
-                int newLimit = mVirtualProductCount - mVirtualProductLimit;
-                mVirtualProductLimit += 9;
-
-                Log.e(TAG, "onFindThirdpartieCompleted: mVirtualProductCurrent == mVirtualProductLimit || newLimit = " + ((newLimit > 9) ? mVirtualProductLimit : newLimit));
-                findVirtualProducts(false, oldLimit, ((newLimit > 9) ? mVirtualProductLimit : newLimit));
-
-
-            }else{
-                Log.e(TAG, "onFindThirdpartieCompleted: || ELSE || mVirtualProductCurrent : " + mVirtualProductCurrent + " == mVirtualProductLimit : " + mVirtualProductLimit);
-            }
-            Log.e(TAG, "onFindThirdpartieCompleted: done!");
-            */
-
-        }
-    }
-
-    @Override
-    public void onFindProductVirtualCompleted_test(int result) {
+    public void onFindProductVirtualCompleted(int result) {
         if(result == 0){
             Toast.makeText(getContext(), "Des Produits Virtuel Synchronise", Toast.LENGTH_SHORT).show();
-        }else if(result == -1){
-            Toast.makeText(getContext(), "Aucun Produits Virtuel Synchronise", Toast.LENGTH_SHORT).show();
+
+            mDb.debugMessageDao().insertDebugMessage(
+                    new DebugItemEntry(getContext(), (System.currentTimeMillis()/1000), "Ticket", CategoriesFragment.class.getSimpleName(), "FindAllVirtualProductsTask()", "Produit virtuel enregistre dans le fichier 'iSales_Produits/produits_details.json'", ""));
         }
+        else if(result == -1){
+            Toast.makeText(getContext(), "Aucun Produits Virtuel Synchronise", Toast.LENGTH_SHORT).show();
+            mDb.debugMessageDao().insertDebugMessage(
+                    new DebugItemEntry(getContext(), (System.currentTimeMillis()/1000), "Ticket", CategoriesFragment.class.getSimpleName(), "FindAllVirtualProductsTask()", "Erreur d'enregistrement des produits virtuel.", ""));
+        }
+
+        loadProduits(0, null, 0);
+        //reloadCategorieFragment();
     }
 
     @Override
@@ -1271,89 +1098,6 @@ public class CategoriesFragment extends Fragment implements ProduitsAdapterListe
 
         super.onCreateOptionsMenu(menu, inflater);
     }
-// ###################################################################################
-
-
-
-    public void getcategoriesproducts_offline() throws JSONException, IOException {
-        Context context;
-
-        FileWriter file;
-        JSONObject products = new JSONObject();
-        JSONObject details = new JSONObject();
-
-        Writer output;
-        File directory = new File(Environment.getExternalStorageDirectory()+"/iSales_Produits");
-        if(!directory.exists()){
-            directory.mkdir();
-        }
-        File file_infos = new File(Environment.getExternalStorageDirectory()+"/iSales_Produits/test.txt");
-        output = new BufferedWriter(new FileWriter(file_infos));
-
-        List<ProduitEntry> produitEntries = mDb.produitDao().getAllProduits();
-        //List<ProductVirtual> vproduitEntries = mDb.virtualProductDao().getAllVirtualProduct();
-
-        for (ProduitEntry produitEntry : produitEntries) {
-
-            /*for (int z = 1; z < vproduitEntries.size(); z++) {
-                double price = Double.parseDouble((vproduitEntries.get(z - 1).getPrice().equals("") ? "0.0" : vproduitEntries.get(z - 1).getPrice())) * Math.round(Double.parseDouble((vproduitEntries.get(z - 1).getQty().equals("") ? "0.0" : vproduitEntries.get(z - 1).getQty())));
-                double priceTTC = Double.parseDouble((vproduitEntries.get(z - 1).getPrice_ttc().equals("") ? "0.0" : vproduitEntries.get(z - 1).getPrice_ttc())) * Math.round(Double.parseDouble((vproduitEntries.get(z - 1).getQty().equals("") ? "0.0" : vproduitEntries.get(z - 1).getQty())));
-            }*/
-
-            details.put("p",produitEntry.getLabel());
-            details.put("p ttc", "eee");
-            products.put("Produit", details);
-            output.write(products.toString());
-        }
-        output.close();
-
-
-
-                Toast.makeText(getContext(), "ok", Toast.LENGTH_LONG).show();
-
-
-/*
-        FileWriter file;
-        JSONObject products = new JSONObject();
-        JSONObject details = new JSONObject();
-
-
-        List<ProduitEntry> produitEntries = mDb.produitDao().getAllProduits();
-        Writer output;
-        //create a new directory to save all products details inside
-        File directory = new File(Environment.getExternalStorageDirectory()+"/iSales_Produits");
-        //check if the product directory exists
-        if(!directory.exists()){
-            directory.mkdir();
-        }
-        //create a new text file to save all products details inside
-        File file_infos = new File(Environment.getExternalStorageDirectory()+"/iSales_Produits/test.txt");
-        output = new BufferedWriter(new FileWriter(file_infos));
-        for (ProduitEntry produitEntry : produitEntries) {
-            details.put("ref", produitEntry.getRef());
-            details.put("name", produitEntry.getLabel());
-            details.put("prix_u_ht", produitEntry.getPrice());
-            details.put("prix_u_ttc", produitEntry.getPrice_ttc());
-            details.put("prix_c_ht", produitEntry.getPrice_base_type());
-            details.put("prix_c_ttc", produitEntry.getPrice());
-            details.put("prix_p_ht", produitEntry.getPrice_min());
-            details.put("prix_p_ttc", produitEntry.getPrice_min_ttc());
-            details.put("u_stock",produitEntry.getStock_reel());
-            details.put("tva", produitEntry.getTva_tx());
-            products.put("Produit", details);
-            output.write(products.toString());
-        }
-        //put data inside text file and save
-        output.close();
-        //create json object
-
-        Toast.makeText(getContext(), getString(R.string.hello_world), Toast.LENGTH_LONG).show();
-*/
-
-
-    }
-// ###################################################################################
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {

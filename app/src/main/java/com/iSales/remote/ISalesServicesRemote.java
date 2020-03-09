@@ -159,7 +159,7 @@ public interface ISalesServicesRemote {
     // ======== RYImg endpoinds  ==========
 
     //  Recupération des produit virtuels d'un produit
-    @GET("product_virtual_3.php")
+    @GET("product_virtual.php")
     Call<ArrayList<ProductVirtual>> ryFindProductVirtual(@Query(ApiUtils.id) Long productId);
 
     //  Recupération des produits affecté a un client
